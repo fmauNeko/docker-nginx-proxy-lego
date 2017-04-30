@@ -2,12 +2,20 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/fsouza/go-dockerclient"
 )
 
+type letsEncryptCertificate struct {
+	host  []string
+	email string
+	test  bool
+}
+
 func main() {
-	endpoint := "unix:///tmp/docker.sock"
+	endpoint := "tcp://127.0.0.1:32768"
 	client, err := docker.NewClient(endpoint)
 	if err != nil {
 		panic(err)
@@ -24,7 +32,22 @@ func main() {
 		}
 		inspectedContainers[i] = inspectedContainer
 	}
+	leMap := make(map[string]letsEncryptCertificate)
 	for _, inspectedContainer := range inspectedContainers {
-		fmt.Println("Env : ", inspectedContainer.Config.Env)
+		cID := fmt.Sprintf("%.12s", inspectedContainer.ID)
+		envMap := make(map[string]string)
+		for _, envVar := range inspectedContainer.Config.Env {
+			envSplit := strings.Split(envVar, "=")
+			envMap[envSplit[0]] = envSplit[1]
+		}
+		if hosts, ok := envMap["LETSENCRYPT_HOST"]; ok {
+			hostsArray := strings.Split(hosts, ",")
+			testBool, err := strconv.ParseBool(envMap["LETSENCRYPT_TEST"])
+			if err != nil {
+				testBool = false
+			}
+			leMap[cID] = letsEncryptCertificate{hostsArray, envMap["LETSENCRYPT_EMAIL"], testBool}
+			fmt.Println("CID:", cID, "- LE:", leMap[cID])
+		}
 	}
 }
