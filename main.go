@@ -2,33 +2,43 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/fsouza/go-dockerclient"
 )
 
 type letsEncryptCertificate struct {
-	host  []string
-	email string
-	test  bool
+	hosts   []string
+	account *Account
+	test    bool
+}
+
+func checkFolder(path string) error {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return os.MkdirAll(path, 0700)
+	}
+	return nil
 }
 
 func main() {
+	conf := NewConfiguration()
 	endpoint := "tcp://127.0.0.1:32768"
 	client, err := docker.NewClient(endpoint)
 	if err != nil {
-		panic(err)
+		log.WithFields(log.Fields{"err": err}).Panic("Error")
 	}
 	containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
 	if err != nil {
-		panic(err)
+		log.WithFields(log.Fields{"err": err}).Panic("Error")
 	}
 	inspectedContainers := make([]*docker.Container, len(containers))
 	for i, container := range containers {
 		inspectedContainer, err := client.InspectContainer(container.ID)
 		if err != nil {
-			panic(err)
+			log.WithFields(log.Fields{"err": err}).Panic("Error")
 		}
 		inspectedContainers[i] = inspectedContainer
 	}
@@ -46,8 +56,8 @@ func main() {
 			if err != nil {
 				testBool = false
 			}
-			leMap[cID] = letsEncryptCertificate{hostsArray, envMap["LETSENCRYPT_EMAIL"], testBool}
-			fmt.Println("CID:", cID, "- LE:", leMap[cID])
+			leMap[cID] = letsEncryptCertificate{hostsArray, NewAccount(envMap["LETSENCRYPT_EMAIL"], conf), testBool}
+			log.WithFields(log.Fields{"CID": cID, "LE": leMap[cID]}).Info("Found LE container")
 		}
 	}
 }
