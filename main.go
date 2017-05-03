@@ -57,7 +57,8 @@ func main() {
 				testBool = false
 			}
 			leMap[cID] = letsEncryptCertificate{hostsArray, NewAccount(envMap["LETSENCRYPT_EMAIL"], conf), testBool}
-			log.WithFields(log.Fields{"CID": cID, "LE": leMap[cID]}).Info("Found LE container")
+			log.WithFields(log.Fields{"CID": cID, "LE": leMap[cID]}).Debug("Found LE container")
+			log.WithFields(log.Fields{"Hosts": strings.Join(leMap[cID].hosts, " ")}).Info("Generating new certificate")
 		}
 	}
 }
