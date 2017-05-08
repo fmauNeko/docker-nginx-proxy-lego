@@ -13,14 +13,21 @@ import (
 
 // Configuration type from Env.
 type Configuration struct {
-	keyTypes []string
-	server   string
-	path     string
+	dEndpoint string
+	keyTypes  []string
+	leServer  string
+	path      string
 }
 
 // NewConfiguration creates a new configuration from CLI data.
 func NewConfiguration() *Configuration {
 	var c Configuration
+
+	if dEndpoint := os.Getenv("DOCKER_ENDPOINT"); len(dEndpoint) > 0 {
+		c.dEndpoint = dEndpoint
+	} else {
+		c.dEndpoint = "unix:///var/run/docker.sock"
+	}
 
 	if keyTypes := os.Getenv("LETSENCRYPT_KEYTYPES"); len(keyTypes) > 0 {
 		c.keyTypes = strings.Split(keyTypes, "+")
@@ -28,10 +35,10 @@ func NewConfiguration() *Configuration {
 		c.keyTypes = []string{"EC384", "RSA4096"}
 	}
 
-	if server := os.Getenv("LETSENCRYPT_SERVER"); len(server) > 0 {
-		c.server = server
+	if leServer := os.Getenv("LETSENCRYPT_SERVER"); len(leServer) > 0 {
+		c.leServer = leServer
 	} else {
-		c.server = "https://acme-v01.api.letsencrypt.org/directory"
+		c.leServer = "https://acme-v01.api.letsencrypt.org/directory"
 	}
 
 	if dataPath := os.Getenv("LETSENCRYPT_PATH"); len(dataPath) > 0 {
@@ -82,11 +89,11 @@ func keyType(kt string) (acme.KeyType, error) {
 	return "", fmt.Errorf("Unsupported KeyType: %s", kt)
 }
 
-// ServerPath returns the OS dependent path to the data for a specific CA
-func (c *Configuration) ServerPath() string {
-	srv, err := url.Parse(c.server)
+// LEServerPath returns the OS dependent path to the data for a specific CA
+func (c *Configuration) LEServerPath() string {
+	srv, err := url.Parse(c.leServer)
 	if err != nil {
-		log.WithFields(log.Fields{"err": err, "server": c.server}).Panic("Failed to parse server URL")
+		log.WithFields(log.Fields{"err": err, "leServer": c.leServer}).Panic("Failed to parse leServer URL")
 	}
 	srvStr := strings.Replace(srv.Host, ":", "_", -1)
 	return strings.Replace(srvStr, "/", string(os.PathSeparator), -1)
@@ -100,7 +107,7 @@ func (c *Configuration) CertPath() string {
 // AccountsPath returns the OS dependent path to the
 // local accounts for a specific CA
 func (c *Configuration) AccountsPath() string {
-	return path.Join(c.path, "accounts", c.ServerPath())
+	return path.Join(c.path, "accounts", c.LEServerPath())
 }
 
 // AccountPath returns the OS dependent path to a particular account

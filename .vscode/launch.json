@@ -8,6 +8,7 @@
 				"mode": "debug",
 				"program": "${workspaceRoot}",
 				"env": {
+					"DOCKER_ENDPOINT": "tcp://127.0.0.1:32768",
 					"GOPATH": "/home/fmauneko/go",
 					"LETSENCRYPT_PATH": "/tmp/lego",
 					"LETSENCRYPT_SERVER": "https://acme-staging.api.letsencrypt.org/directory"
