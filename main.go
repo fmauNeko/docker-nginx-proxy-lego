@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/fsouza/go-dockerclient"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 )
 
 type letsEncryptCertificate struct {
@@ -25,18 +27,19 @@ func checkFolder(path string) error {
 
 func main() {
 	conf := NewConfiguration()
-	endpoint := "tcp://127.0.0.1:32768"
-	client, err := docker.NewClient(endpoint)
+	apiHeaders := map[string]string{"User-Agent": "Nginx-Proxy-Lego/0.0.1"}
+	apiVersion := "1.29"
+	client, err := client.NewClient(conf.dEndpoint, apiVersion, nil, apiHeaders)
 	if err != nil {
 		log.WithFields(log.Fields{"err": err}).Panic("Error")
 	}
-	containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
+	containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
 		log.WithFields(log.Fields{"err": err}).Panic("Error")
 	}
-	inspectedContainers := make([]*docker.Container, len(containers))
+	inspectedContainers := make([]types.ContainerJSON, len(containers))
 	for i, container := range containers {
-		inspectedContainer, err := client.InspectContainer(container.ID)
+		inspectedContainer, err := client.ContainerInspect(context.Background(), container.ID)
 		if err != nil {
 			log.WithFields(log.Fields{"err": err}).Panic("Error")
 		}
