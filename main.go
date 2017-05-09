@@ -12,6 +12,8 @@ import (
 	"github.com/docker/docker/client"
 )
 
+var version = "dev"
+
 type letsEncryptCertificate struct {
 	hosts   []string
 	account *Account
@@ -27,7 +29,7 @@ func checkFolder(path string) error {
 
 func main() {
 	conf := NewConfiguration()
-	apiHeaders := map[string]string{"User-Agent": "Nginx-Proxy-Lego/0.0.1"}
+	apiHeaders := map[string]string{"User-Agent": "Nginx-Proxy-Lego/" + version}
 	apiVersion := "1.29"
 	client, err := client.NewClient(conf.dEndpoint, apiVersion, nil, apiHeaders)
 	if err != nil {
