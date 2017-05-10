@@ -51,7 +51,7 @@ func NewConfiguration() *Configuration {
 		c.path = path.Join(cwd, ".lego")
 	}
 
-	log.WithField("conf", c).Info("Config")
+	log.WithField("conf", c).Debug("Config")
 
 	return &c
 }
