@@ -13,5 +13,5 @@ RUN set -ex \
 		&& apk del .build-deps
 
 RUN mkdir -p /etc/nginx/certs
-WORKDIR /etc/nginx/certs
+ENV LETSENCRYPT_PATH /etc/nginx/certs
 CMD ["go-wrapper", "run"]
