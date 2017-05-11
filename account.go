@@ -25,19 +25,20 @@ func NewAccount(email string, conf *Configuration) *Account {
 	// TODO: move to function in configuration?
 	accKeyPath := accKeysPath + string(os.PathSeparator) + email + ".key"
 	if err := checkFolder(accKeysPath); err != nil {
-		log.WithFields(log.Fields{"err": err, "account": email}).Fatalf("Could not check/create account directory")
+		log.WithFields(log.Fields{"err": err, "account": email}).Fatal("Could not check/create account directory")
 	}
 
 	var privKey crypto.PrivateKey
 	if _, err := os.Stat(accKeyPath); os.IsNotExist(err) {
 
-		log.WithFields(log.Fields{"account": email}).Printf("No account key found. Generating a curve P384 EC key.")
+		log.WithField("account", email).Info("No account key found.")
+		log.WithField("account", email).Info("Generating a P384 EC key.")
 		privKey, err = generatePrivateKey(accKeyPath)
 		if err != nil {
 			log.Fatalf("Could not generate RSA private account key for account %s: %v", email, err)
 		}
 
-		log.Printf("Saved key to %s", accKeyPath)
+		log.WithField("path", accKeyPath).Info("Saved key")
 	} else {
 		privKey, err = loadPrivateKey(accKeyPath)
 		if err != nil {
