@@ -8,7 +8,7 @@ go:
 before_install:
 - docker build -t fmauneko/nginx-proxy-lego .
 before_script:
-- docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name nginx-letsencrypt blog
+- docker run -d -v /var/run/docker.sock:/var/run/docker.sock -e LETSENCRYPT_SERVER=https://acme-staging.api.letsencrypt.org/directory --name nginx-letsencrypt fmauneko/nginx-proxy-lego
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
 script:
