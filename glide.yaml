@@ -1,0 +1,13 @@
+package: github.com/fmauNeko/docker-nginx-proxy-lego
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.5
+- package: github.com/docker/docker
+  version: ~17.05.0-ce
+  subpackages:
+  - api/types
+  - client
+- package: github.com/xenolf/lego
+  version: ^0.3.1
+  subpackages:
+  - acme

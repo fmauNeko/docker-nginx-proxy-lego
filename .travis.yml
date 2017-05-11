@@ -6,13 +6,18 @@ go:
 - 1.8.x
 - 1.7.x
 before_install:
+- sudo add-apt-repository ppa:masterminds/glide -y
+- sudo apt-get update -q
+- sudo apt-get install glide -y
 - docker build -t fmauneko/nginx-proxy-lego .
+install:
+- glide install
 before_script:
 - docker run -d -v /var/run/docker.sock:/var/run/docker.sock -e LETSENCRYPT_SERVER=https://acme-staging.api.letsencrypt.org/directory --name nginx-letsencrypt fmauneko/nginx-proxy-lego
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
 script:
-- go test -v -covermode=count -coverprofile=coverage.out ./...
+- go test -v -covermode=count -coverprofile=coverage.out $(glide novendor)
 - $GOPATH/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 notifications:
   email: false

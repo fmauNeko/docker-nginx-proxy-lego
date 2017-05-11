@@ -1,0 +1,77 @@
+hash: db0c60f8b0d7b7f3206a8500bb0479375d408528cf2f124bd46b50d9cece3f92
+updated: 2017-05-11T19:40:33.550333149+02:00
+imports:
+- name: github.com/docker/distribution
+  version: ce936a85915a55418ea62dc32a0a1274f2740104
+  subpackages:
+  - digestset
+  - reference
+- name: github.com/docker/docker
+  version: 90d35abf7b3535c1c319c872900fbd76374e521c
+  subpackages:
+  - api
+  - api/types
+  - api/types/blkiodev
+  - api/types/container
+  - api/types/events
+  - api/types/filters
+  - api/types/image
+  - api/types/mount
+  - api/types/network
+  - api/types/registry
+  - api/types/strslice
+  - api/types/swarm
+  - api/types/time
+  - api/types/versions
+  - api/types/volume
+  - client
+  - pkg/ioutils
+  - pkg/longpath
+  - pkg/system
+  - pkg/tlsconfig
+- name: github.com/docker/go-connections
+  version: e15c02316c12de00874640cd76311849de2aeed5
+  subpackages:
+  - nat
+  - sockets
+  - tlsconfig
+- name: github.com/docker/go-units
+  version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
+- name: github.com/docker/libtrust
+  version: aabc10ec26b754e797f9028f4589c5b7bd90dc20
+- name: github.com/Microsoft/go-winio
+  version: d311c76e775b5092c023569caacdbb4e569c3243
+- name: github.com/miekg/dns
+  version: f282f80e243cc2bf8f6410c30d821b93b794e168
+- name: github.com/opencontainers/go-digest
+  version: eaa60544f31ccf3b0653b1a118b76d33418ff41b
+- name: github.com/pkg/errors
+  version: c605e284fe17294bda444b34710735b29d1a9d90
+- name: github.com/Sirupsen/logrus
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+- name: github.com/xenolf/lego
+  version: 96a24777ffb3c6a25f6bb0b3a7997969c1fcde4b
+  subpackages:
+  - acme
+- name: golang.org/x/crypto
+  version: 122d919ec1efcfb58483215da23f815853e24b81
+  subpackages:
+  - ocsp
+- name: golang.org/x/net
+  version: c9b681d35165f1995d6f3034e61f8761d4b90c99
+  subpackages:
+  - context
+  - context/ctxhttp
+  - proxy
+  - publicsuffix
+- name: golang.org/x/sys
+  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
+  subpackages:
+  - unix
+  - windows
+- name: gopkg.in/square/go-jose.v1
+  version: aa2e30fdd1fe9dd3394119af66451ae790d50e0d
+  subpackages:
+  - cipher
+  - json
+testImports: []

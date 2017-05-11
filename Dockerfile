@@ -8,7 +8,8 @@ RUN set -ex \
 			gcc \
 			musl-dev \
 			git \
-		&& go-wrapper download \
+			glide \
+		&& glide install \
     && go-wrapper install \
 		&& apk del .build-deps
 
