@@ -6,7 +6,7 @@ go:
 - 1.8.x
 - 1.7.x
 before_install:
-- docker build -t fmauNeko/nginx-proxy-lego .
+- docker build -t fmauneko/nginx-proxy-lego .
 before_script:
 - docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name nginx-letsencrypt blog
 - go get golang.org/x/tools/cmd/cover
