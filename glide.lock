@@ -1,5 +1,5 @@
 hash: db0c60f8b0d7b7f3206a8500bb0479375d408528cf2f124bd46b50d9cece3f92
-updated: 2017-05-11T19:40:33.550333149+02:00
+updated: 2017-05-13T21:27:05.549804018+02:00
 imports:
 - name: github.com/docker/distribution
   version: ce936a85915a55418ea62dc32a0a1274f2740104
@@ -54,18 +54,18 @@ imports:
   subpackages:
   - acme
 - name: golang.org/x/crypto
-  version: 122d919ec1efcfb58483215da23f815853e24b81
+  version: ab89591268e0c8b748cbe4047b00197516011af5
   subpackages:
   - ocsp
 - name: golang.org/x/net
-  version: c9b681d35165f1995d6f3034e61f8761d4b90c99
+  version: 84f0e6f92b10139f986b1756e149a7d9de270cdc
   subpackages:
   - context
   - context/ctxhttp
   - proxy
   - publicsuffix
 - name: golang.org/x/sys
-  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
+  version: f845067cf72a21fb4929b0e6a35273bd83b56396
   subpackages:
   - unix
   - windows
