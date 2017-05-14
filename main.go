@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/docker/api/types"
@@ -13,6 +15,7 @@ import (
 )
 
 var version = "dev"
+var wg sync.WaitGroup
 
 type letsEncryptCertificate struct {
 	hosts   []string
@@ -27,7 +30,7 @@ func checkFolder(path string) error {
 	return nil
 }
 
-func main() {
+func checkContainers() {
 	conf := NewConfiguration()
 	apiHeaders := map[string]string{"User-Agent": "Nginx-Proxy-Lego/" + version}
 	apiVersion := "1.29"
@@ -66,4 +69,31 @@ func main() {
 			log.WithFields(log.Fields{"Hosts": strings.Join(leMap[cID].hosts, " ")}).Info("Generating new certificate")
 		}
 	}
+
+	// We're done here
+	log.Info("Done, sleeping for 1 hour")
+	wg.Done()
+}
+
+func ticker() {
+	ticker := time.NewTicker(time.Hour)
+
+	for {
+		<-ticker.C
+		wg.Add(1)
+		go checkContainers()
+	}
+}
+
+func main() {
+	// Immediately run a check on start
+	wg.Add(1)
+	go checkContainers()
+
+	// Set up our ticker
+	wg.Add(1)
+	go ticker()
+
+	// Wait for all goroutines
+	wg.Wait()
 }
