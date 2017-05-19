@@ -69,6 +69,9 @@ func checkContainers() {
 			log.WithFields(log.Fields{"Hosts": strings.Join(leMap[cID].hosts, " ")}).Info("Generating new certificate")
 		}
 	}
+	if err := client.Close(); err != nil {
+		log.WithFields(log.Fields{"err": err}).Panic("Error")
+	}
 
 	// We're done here
 	log.Info("Done, sleeping for 1 hour")
