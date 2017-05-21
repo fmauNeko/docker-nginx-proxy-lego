@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"sync"
@@ -78,24 +79,51 @@ func checkContainers() {
 	wg.Done()
 }
 
-func ticker() {
-	ticker := time.NewTicker(time.Hour)
+func signalHandler(ticker *time.Ticker) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
 
+signalLoop:
 	for {
-		<-ticker.C
+		sig := <-c
+		switch sig {
+		case os.Interrupt:
+			log.WithField("signal", "SIGTERM").Info("Terminating...")
+			ticker.Stop()
+			break signalLoop
+		}
+	}
+
+	wg.Done()
+}
+
+func tickerHandler(ticker *time.Ticker) {
+	select {
+	case <-ticker.C:
 		wg.Add(1)
 		go checkContainers()
+	default:
+		{
+		}
 	}
+
+	wg.Done()
 }
 
 func main() {
+	ticker := time.NewTicker(time.Hour)
+
 	// Immediately run a check on start
 	wg.Add(1)
 	go checkContainers()
 
 	// Set up our ticker
 	wg.Add(1)
-	go ticker()
+	go tickerHandler(ticker)
+
+	// Set up our signal handler
+	wg.Add(1)
+	go signalHandler(ticker)
 
 	// Wait for all goroutines
 	wg.Wait()
