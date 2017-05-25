@@ -19,7 +19,7 @@ type Account struct {
 	conf         *Configuration
 }
 
-var accounts map[string]*Account
+var accounts = make(map[string]*Account)
 
 // GetAccount gets the account associated to an email address
 func GetAccount(email string, conf *Configuration) *Account {
