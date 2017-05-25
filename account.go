@@ -19,6 +19,19 @@ type Account struct {
 	conf         *Configuration
 }
 
+var accounts map[string]*Account
+
+// GetAccount gets the account associated to an email address
+func GetAccount(email string, conf *Configuration) *Account {
+	if _, ok := accounts[email]; ok {
+		return accounts[email]
+	}
+
+	acc := NewAccount(email, conf)
+	accounts[email] = acc
+	return acc
+}
+
 // NewAccount creates a new account for an email address
 func NewAccount(email string, conf *Configuration) *Account {
 	accKeysPath := conf.AccountKeysPath(email)

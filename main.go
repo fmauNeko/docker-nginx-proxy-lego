@@ -16,13 +16,7 @@ import (
 )
 
 var version = "dev"
-var wg sync.WaitGroup
-
-type letsEncryptCertificate struct {
-	hosts   []string
-	account *Account
-	test    bool
-}
+var globalWg, checkWg sync.WaitGroup
 
 func checkFolder(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -58,8 +52,6 @@ func checkContainers() {
 		inspectedContainers[i] = inspectedContainer
 	}
 
-	leMap := make(map[string]letsEncryptCertificate)
-
 	for _, inspectedContainer := range inspectedContainers {
 		cID := fmt.Sprintf("%.12s", inspectedContainer.ID)
 		envMap := make(map[string]string)
@@ -77,9 +69,11 @@ func checkContainers() {
 				testBool = false
 			}
 
-			leMap[cID] = letsEncryptCertificate{hostsArray, NewAccount(envMap["LETSENCRYPT_EMAIL"], conf), testBool}
-			log.WithFields(log.Fields{"CID": cID, "LE": leMap[cID]}).Debug("Found LE container")
-			log.WithFields(log.Fields{"Hosts": strings.Join(leMap[cID].hosts, " ")}).Info("Generating new certificate")
+			cert := Certificate{hostsArray, GetAccount(envMap["LETSENCRYPT_EMAIL"], conf), testBool}
+			log.WithFields(log.Fields{"CID": cID, "Cert": cert}).Debug("Found LE container")
+
+			checkWg.Add(1)
+			cert.generateCertificate()
 		}
 	}
 
@@ -89,7 +83,7 @@ func checkContainers() {
 
 	// We're done here
 	log.Info("Done, sleeping for 1 hour")
-	wg.Done()
+	globalWg.Done()
 }
 
 func signalHandler(ticker *time.Ticker) {
@@ -107,37 +101,37 @@ signalLoop:
 		}
 	}
 
-	wg.Done()
+	globalWg.Done()
 }
 
 func tickerHandler(ticker *time.Ticker) {
 	select {
 	case <-ticker.C:
-		wg.Add(1)
+		globalWg.Add(1)
 		go checkContainers()
 	default:
 		{
 		}
 	}
 
-	wg.Done()
+	globalWg.Done()
 }
 
 func main() {
 	ticker := time.NewTicker(time.Hour)
 
 	// Immediately run a check on start
-	wg.Add(1)
+	globalWg.Add(1)
 	go checkContainers()
 
 	// Set up our ticker
-	wg.Add(1)
+	globalWg.Add(1)
 	go tickerHandler(ticker)
 
 	// Set up our signal handler
-	wg.Add(1)
+	globalWg.Add(1)
 	go signalHandler(ticker)
 
 	// Wait for all goroutines
-	wg.Wait()
+	globalWg.Wait()
 }
