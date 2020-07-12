@@ -1,13 +1,18 @@
-hash: db0c60f8b0d7b7f3206a8500bb0479375d408528cf2f124bd46b50d9cece3f92
-updated: 2017-05-24T17:16:44.492431637+02:00
+hash: bf2ed7eb1cf6d7fbccd0be0ef1e4e941c8130a19501aa2704b738c49f3b93660
+updated: 2020-07-12T16:56:18.9563571+02:00
 imports:
+- name: github.com/containerd/containerd
+  version: a6697c1d5f1d00f3e56048503aef8aa70b9b4170
+  subpackages:
+  - errdefs
 - name: github.com/docker/distribution
   version: 49bb3242da57709ec9e3f7588e38608d1eb17156
   subpackages:
   - digestset
   - reference
+  - registry/api/errcode
 - name: github.com/docker/docker
-  version: 90d35abf7b3535c1c319c872900fbd76374e521c
+  version: 9dc6525e6118a25fab2be322d1914740ea842495
   subpackages:
   - api
   - api/types
@@ -21,14 +26,12 @@ imports:
   - api/types/registry
   - api/types/strslice
   - api/types/swarm
+  - api/types/swarm/runtime
   - api/types/time
   - api/types/versions
   - api/types/volume
   - client
-  - pkg/ioutils
-  - pkg/longpath
-  - pkg/system
-  - pkg/tlsconfig
+  - errdefs
 - name: github.com/docker/go-connections
   version: e15c02316c12de00874640cd76311849de2aeed5
   subpackages:
@@ -37,40 +40,101 @@ imports:
   - tlsconfig
 - name: github.com/docker/go-units
   version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
-- name: github.com/docker/libtrust
-  version: aabc10ec26b754e797f9028f4589c5b7bd90dc20
+- name: github.com/gogo/protobuf
+  version: 5628607bb4c51c3157aacc3a50f0ab707582b805
+  subpackages:
+  - proto
+- name: github.com/golang/protobuf
+  version: d04d7b157bb510b1e0c10132224b616ac0e26b17
+  subpackages:
+  - proto
+  - ptypes
+  - ptypes/any
+  - ptypes/duration
+  - ptypes/timestamp
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: edb144dfd453055e1e49a3d8b410a660b5a87613
 - name: github.com/Microsoft/go-winio
   version: f533f7a102197536779ea3a8cb881d639e21ec5a
 - name: github.com/miekg/dns
   version: 193f91db0b8cd713863aeab710f35381472b2e8e
 - name: github.com/opencontainers/go-digest
   version: eaa60544f31ccf3b0653b1a118b76d33418ff41b
+- name: github.com/opencontainers/image-spec
+  version: 79b036d80240ae530a8de15e1d21c7ab9292c693
+  subpackages:
+  - specs-go
+  - specs-go/v1
 - name: github.com/pkg/errors
   version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/Sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+- name: github.com/sirupsen/logrus
+  version: 60c74ad9be0d874af0ab0daef6ab07c5c5911f0d
 - name: github.com/xenolf/lego
-  version: 96a24777ffb3c6a25f6bb0b3a7997969c1fcde4b
+  version: 286c44337e7fb0b3aceaf71c42448e887a6db218
   subpackages:
   - acme
+  - log
 - name: golang.org/x/crypto
   version: 7e9105388ebff089b3f99f0ef676ea55a6da3a7e
   subpackages:
+  - ed25519
+  - ed25519/internal/edwards25519
   - ocsp
+  - pbkdf2
 - name: golang.org/x/net
   version: 5b58a9c3e1690d33a592e5b791638e25eb9b3f70
   subpackages:
-  - context
-  - context/ctxhttp
   - proxy
-  - publicsuffix
 - name: golang.org/x/sys
   version: dbc2be9168a660ef302e04b6ff6406de6f967473
   subpackages:
   - unix
   - windows
-- name: gopkg.in/square/go-jose.v1
-  version: aa2e30fdd1fe9dd3394119af66451ae790d50e0d
+- name: google.golang.org/genproto
+  version: 8698661620497c6fd6244a2fb2ff2518e6a6e892
+  subpackages:
+  - googleapis/rpc/status
+- name: google.golang.org/grpc
+  version: d8193ee9cc3e403ec488bf371c57fe8a63e34890
+  subpackages:
+  - codes
+  - internal/status
+  - status
+- name: google.golang.org/protobuf
+  version: e14d6b3cdce27a8743907161e84fa6d07e30266d
+  subpackages:
+  - encoding/prototext
+  - encoding/protowire
+  - internal/descfmt
+  - internal/descopts
+  - internal/detrand
+  - internal/encoding/defval
+  - internal/encoding/messageset
+  - internal/encoding/tag
+  - internal/encoding/text
+  - internal/errors
+  - internal/filedesc
+  - internal/filetype
+  - internal/flags
+  - internal/genid
+  - internal/impl
+  - internal/order
+  - internal/pragma
+  - internal/set
+  - internal/strs
+  - internal/version
+  - proto
+  - reflect/protoreflect
+  - reflect/protoregistry
+  - runtime/protoiface
+  - runtime/protoimpl
+  - types/known/anypb
+  - types/known/durationpb
+  - types/known/timestamppb
+- name: gopkg.in/square/go-jose.v2
+  version: 3a5ee095dcb5030a9de84fb92c222ac652fff176
   subpackages:
   - cipher
   - json

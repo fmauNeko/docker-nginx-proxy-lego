@@ -38,7 +38,7 @@ func NewConfiguration() *Configuration {
 	if leServer := os.Getenv("LETSENCRYPT_SERVER"); len(leServer) > 0 {
 		c.leServer = leServer
 	} else {
-		c.leServer = "https://acme-v01.api.letsencrypt.org/directory"
+		c.leServer = "https://acme-v02.api.letsencrypt.org/directory"
 	}
 
 	if dataPath := os.Getenv("LETSENCRYPT_PATH"); len(dataPath) > 0 {
